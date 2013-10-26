@@ -47,7 +47,7 @@ int C4Game::play(int col) {
 int C4Game::getWinner(int x, int y) {
     int cell = board[y][x];
     int dir[8][2] = { {+1, 0}, {+1, -1}, {0, +1}, {-1, +1},
-                      {-1, 0}, {-1, -1}, {0, -1}, {+1, -1} };
+                      {-1, 0}, {-1, -1}, {0, -1}, {+1, +1} };
     for (int i = 0; i < 8; ++i) {
         int xx = x, yy = y;
         int dx = dir[i][0], dy = dir[i][1];

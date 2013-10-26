@@ -69,6 +69,19 @@ Polygon2D* new_circle(rgba col, GLint nVertex) {
     return new Polygon2D(nVertex, vert, cols, GL_TRIANGLE_FAN);
 }
 
+Polygon2D* new_circle_gradient(rgba side, rgba col, GLint nVertex) {
+    GLfloat ang = M_PI * 2 / (nVertex - 2);
+    vec2 vert[nVertex];
+    rgba cols[nVertex];
+    cols[0] = col;
+    vert[0] = vec2(0.0, 0.0);
+    for (GLint i = 1; i < nVertex; ++i) {
+        cols[i] = sin(i * ang - M_PI / 2) > 0.0 ? col : side;
+        vert[i] = vec2(cos(i * ang - M_PI / 2) / 2, sin(i * ang - M_PI / 2) / 2);
+    }
+    return new Polygon2D(nVertex, vert, cols, GL_TRIANGLE_FAN);
+}
+
 Polygon2D* new_arrow(rgba col) {
     vec2 vert[3] = { vec2(+.0f, +.5f), vec2(-.5f, -.5f), vec2(+.5f, -.5f) };
     rgba cols[3] = { col, col, col };

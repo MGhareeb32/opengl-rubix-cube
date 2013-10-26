@@ -19,6 +19,7 @@ public:
 
 Polygon2D* new_square(rgba col);
 Polygon2D* new_circle(rgba col, GLint nVertex);
+Polygon2D* new_circle_gradient(rgba side, rgba col, GLint nVertex);
 Polygon2D* new_arrow(rgba col);
 
 #endif

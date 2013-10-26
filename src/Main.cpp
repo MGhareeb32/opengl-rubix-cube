@@ -8,12 +8,15 @@ GLint globalTime = 0;
 GLboolean mouseDown[3], mouseClick[3];
 vec2 mousePos, mousePosPrev;
 GLboolean keyDown[256], keyClick[256];
+GLboolean inputFreeze = false;
 
 GLint unifromOffset2f, unifromScale2f;
+GLint unifromRotAngle1f;
 GLint unifromBlendColor4f, unifromBlendFactor4f;
 
 C4Game game;
 GLint gameSelectedCol, gameSelectedRow;
+GLint fallingDiscX = -1, fallingDiscY = -1;
 GLfloat cellS = 2.f / (game.W > game.H ? (game.W + 1) : (game.H + 1));
 Polygon2D *polygonSquare, *polygonCircle, *polygonArrow;
 rgba backgroundCol;
@@ -28,6 +31,8 @@ void init(void) {
     unifromOffset2f = glGetUniformLocation(program, "offset");
     // uniform vec2 scale;
     unifromScale2f = glGetUniformLocation(program, "scale");
+    // uniform float rotAngle;
+    unifromRotAngle1f = glGetUniformLocation(program, "rotAngle");
     // uniform vec4 blend_color;
     unifromBlendColor4f = glGetUniformLocation(program, "blend_color");
     // uniform vec4 blend_factor;
@@ -45,7 +50,7 @@ void init(void) {
 
     // initialize polygons
     polygonSquare = new_square(rgba(1.0, 1.0, 1.0, 0.8));
-    polygonCircle = new_circle(rgba(1.0, 1.0, 1.0, 0.8), 16);
+    polygonCircle = new_circle_gradient(rgba(0.0, 0.0, 0.0, 0.8), rgba(1.0, 1.0, 1.0, 0.8), 32);
     polygonArrow = new_arrow(rgba(1.0, 1.0, 1.0, 0.8));
     gameSelectedCol = 0;
     gameSelectedRow = -1;
@@ -53,9 +58,28 @@ void init(void) {
 
 // DISPLAY
 
+void drawDisc(bool player2, bool animate, float x, float y) {
+	glUniform4f(unifromBlendFactor4f, 0.9, 0.9, 0.9, 1.0);
+
+	glUniform1f(unifromRotAngle1f, globalTime * 0.1 * animate);
+
+	glUniform4f(unifromBlendColor4f,
+				0.8 * !player2, 0.6 * player2, 0.1, 1.0);
+	glUniform2f(unifromScale2f, cellS * 0.7, cellS * 0.7);
+	polygonCircle->render();
+
+	glUniform4f(unifromBlendColor4f,
+				0.9 * !player2, 0.7 * player2, 0.1, 1.0);
+	glUniform2f(unifromScale2f, cellS * 0.6, cellS * 0.6);
+	polygonCircle->render();
+
+	glUniform1f(unifromRotAngle1f, 0);
+}
+
 void display(void) {
-    // background
     glUniform2f(unifromOffset2f, 0.0, 0.0);
+    glUniform1f(unifromRotAngle1f, 0.0);
+    // background
     glUniform2f(unifromScale2f, 2.0, 2.0);
     glUniform4f(unifromBlendColor4f,
                 backgroundCol.x, backgroundCol.y, backgroundCol.z,
@@ -63,12 +87,14 @@ void display(void) {
     glUniform4f(unifromBlendFactor4f, 1.0, 1.0, 1.0, 1.0);
     polygonSquare->render();
     // horizontal bars
-    glUniform2f(unifromScale2f, 2.0, 0.1);
-    glUniform4f(unifromBlendFactor4f, 0.98, 0.98, 0.98, 1.0);
-    for (int i = 0; i < 5; ++i) {
-        glUniform2f(unifromOffset2f, 0.0, (((globalTime + 40 * i) % 200) * 0.01) - 1.0);
+    glUniform2f(unifromScale2f, 2.0, 0.05);
+    glUniform4f(unifromBlendFactor4f, 0.8, 0.9, 1.0, 1.0);
+    for (int i = 0; i < 10; ++i) {
+    	float ypos = (((globalTime + 20 * i) % 200 - 100) * 0.01);
+        glUniform2f(unifromOffset2f, 0, ypos);
         polygonSquare->render();
     }
+    glUniform1f(unifromRotAngle1f, 0.0);
     // board
     for (GLint i = game.H - 1; i >= 0; --i) {
         for (GLint j = 0; j < game.W; ++j) {
@@ -84,31 +110,23 @@ void display(void) {
 
             glUniform4f(unifromBlendFactor4f, 0.8, 0.8, 0.8, 0.0);
             glUniform2f(unifromOffset2f, x * cellS, (y + 0.05) * cellS);
-            glUniform2f(unifromOffset2f, x * cellS, y * cellS);
             polygonSquare->render();
-            glUniform2f(unifromOffset2f, x * cellS, y * cellS);
             // hole
+            glUniform2f(unifromOffset2f, x * cellS, y * cellS);
             glUniform2f(unifromScale2f, cellS * 0.8, cellS * 0.8);
             glUniform4f(unifromBlendColor4f, 0.0, 0.0, 0.4, 0.2);
             glUniform4f(unifromBlendFactor4f, 1.0, 1.0, 1.0, 1.0);
             polygonCircle->render();
             // disc
-            if (game[i][j] == 0) {
+            if (game[i][j] || (i == fallingDiscY && j == fallingDiscX)) {
+                bool falling = (i == fallingDiscY && j == fallingDiscX);
+                bool player2 = falling ? (game.getCurrentPlayer() - 1) : (game[i][j] - 1);
+                drawDisc(player2, falling, x * cellS, y * cellS);
+            }
+            // empty
+            else {
                 glUniform4f(unifromBlendColor4f, 0.0, 0.0, 0.0, 0.2);
                 glUniform2f(unifromScale2f, cellS * 0.65, cellS * 0.65);
-                polygonCircle->render();
-            } else {
-                bool player2 = game[i][j] - 1;
-
-                glUniform4f(unifromBlendFactor4f, 1.0, 1.0, 1.0, 1.0);
-                glUniform4f(unifromBlendColor4f,
-                            0.8 * !player2, 0.6 * player2, 0.1, 1.0);
-                glUniform2f(unifromScale2f, cellS * 0.7, cellS * 0.7);
-                polygonCircle->render();
-
-                glUniform4f(unifromBlendColor4f,
-                            0.9 * !player2, 0.7 * player2, 0.1, 1.0);
-                glUniform2f(unifromScale2f, cellS * 0.6, cellS * 0.6);
                 polygonCircle->render();
             }
         }
@@ -132,7 +150,7 @@ void display(void) {
     // scores
     for (int i = 0; i < game.getScore(1) + game.getScore(2); ++i) {
         bool player2 = game.getScore(1) < i + 1;
-        GLfloat x = i - (game.getScore(1) + game.getScore(2)) / 2;
+        GLfloat x = game.W / 2 - i;
         GLfloat y = -game.H / 2 - 0.8;
 
         glUniform4f(unifromBlendFactor4f, 1.0, 1.0, 1.0, 1.0);
@@ -162,12 +180,25 @@ void update() {
             gameSelectedCol--;
         else if (keyClick['a'])
             gameSelectedCol++;
-        else if (keyClick['s'])
-            game.play(gameSelectedCol);
         else if (abs(mousePos.x - mousePosPrev.x) > WindowWidth / 100)
             gameSelectedCol = hoveredCol;
-        else if (mouseClick[0])
-            game.play(gameSelectedCol);
+        // play and freeze
+        else if (keyClick['s'] || mouseClick[0]) {
+        	inputFreeze = true;
+        	fallingDiscX = gameSelectedCol;
+        	fallingDiscY = 0;
+        }
+        // animate and unfreeze
+        if (inputFreeze) {
+        	if (globalTime % 5 == 0)
+        		fallingDiscY++;
+        	if (fallingDiscY == game.H - game.getColHeight(fallingDiscX)) {
+        		game.play(fallingDiscX);
+        		inputFreeze = false;
+        		fallingDiscX = -1;
+        		fallingDiscY = -1;
+        	}
+        }
         gameSelectedCol += game.W;
         gameSelectedCol %= game.W;
     }
@@ -193,21 +224,29 @@ void update() {
 // INPUT
 
 void keyPress(unsigned char key, GLint x, GLint y) {
+	if (inputFreeze)
+		return;
     keyDown[key] = 1;
 }
 
 void keyRelease(unsigned char key, GLint x, GLint y) {
-    keyDown[key] = 0;
+	if (inputFreeze)
+		return;
+	keyDown[key] = 0;
     keyClick[key] = 1;
 }
 
 void mouseMove(GLint x, GLint y) {
-    mousePos.x = x;
+	if (inputFreeze)
+		return;
+	mousePos.x = x;
     mousePos.y = y;
 }
 
 void mouseButton(GLint mouseBtn, GLint isRelease, GLint x, GLint y) {
-    mouseDown[mouseBtn] = !isRelease;
+	if (inputFreeze)
+		return;
+	mouseDown[mouseBtn] = !isRelease;
     mouseClick[mouseBtn] = isRelease;
 }
 
@@ -215,7 +254,7 @@ void mouseButton(GLint mouseBtn, GLint isRelease, GLint x, GLint y) {
 
 void runMainLoop(int arg) {
     update();
-    display();
+    glutPostRedisplay();
     for (int i = 0; i < 3; ++i)
         mouseClick[i] = 0;
     for (int i = 0; i < 256; ++i)
