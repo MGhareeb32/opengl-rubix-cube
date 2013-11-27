@@ -3,6 +3,8 @@ c4opengl
 
 The boring Connect-4 for OpenGL. A simple introduction to OpenGL and Shader Language.
 
+![ScreenShot](https://raw.github.com/MGhareeb32/c4opengl/master/screenshot.png)
+
 Easy Eclipse development
 ========================
 0. Clone the repo:
