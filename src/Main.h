@@ -1,8 +1,10 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 
-#include "../include/Angel.h"
-#include "Polygon2D.h"
-#include "C4Game.h"
+#include "OpenGL.h"
+#include "XGL.h"
+#include "mesh/ObjLoader.h"
+#include "entity/Entity.h"
+#include "view/Camera.h"
 
 #endif

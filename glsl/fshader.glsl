@@ -1,4 +1,4 @@
-#version 150
+#version 330 core
 
 uniform vec4 blend_color;
 uniform vec4 blend_factor;
