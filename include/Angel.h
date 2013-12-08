@@ -67,7 +67,6 @@ const GLfloat  DegreesToRadians = M_PI / 180.0;
 }  // namespace Angel
 
 #include "glm/glm.hpp"
-using namespace glm;
 
 
 #define Print(x)  do { std::cerr << #x " = " << (x) << std::endl; } while(0)

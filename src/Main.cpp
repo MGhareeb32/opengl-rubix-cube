@@ -51,33 +51,21 @@ void init(void) {
     rubix_face = objLoader::load("res/mesh/rubix-cube-face.obj");
     // initialize faces
     world.set_mesh(axes);
-    world.transform() = glm::scale
-        (world.transform(), glm::vec3(.1f, .1f, .1f));
+    world.scale(glm::vec3(.1f, .1f, .1f));
     // 1
     world.addChild("pyramid1", new entity::Entity(pyramid));
-    world.getChild("pyramid1")->transform()
-        = glm::rotate (90.f, glm::vec3(0, 1, 0))
-        * world.getChild("pyramid1")->transform();
-    world.getChild("pyramid1")->transform()
-        = glm::translate(glm::vec3(1.f, 0.f, 0.f))
-        * world.getChild("pyramid1")->transform();
+    world.getChild("pyramid1")->rotate(90.f, glm::vec3(0, 1, 0));
+    world.getChild("pyramid1")->translate(glm::vec3(1.f, 0.f, 0.f));
     // 2
     world.addChild("pyramid2", new entity::Entity(pyramid));
-    world.getChild("pyramid2")->transform()
-        = glm::rotate (-90.f, glm::vec3(1, 0, 0))
-        * world.getChild("pyramid2")->transform();
-    world.getChild("pyramid2")->transform()
-        = glm::translate(glm::vec3(0.f, 1.f, 0.f))
-        * world.getChild("pyramid2")->transform();
+    world.getChild("pyramid2")->rotate (-90.f, glm::vec3(1, 0, 0));
+    world.getChild("pyramid2")->translate(glm::vec3(0.f, 1.f, 0.f));
     // 3
     world.addChild("pyramid3", new entity::Entity(pyramid));
-    world.getChild("pyramid3")->transform()
-        = glm::translate(glm::vec3(0.f, 0.f, 1.f))
-        * world.getChild("pyramid3")->transform();
+    world.getChild("pyramid3")->translate(glm::vec3(0.f, 0.f, 1.f));
     // ground
-    world.addChild("box", new entity::Entity(box));
-//    translate_v(glm::vec3(.05f, .05f, -.05f, 1.f), world.getChild("box")->pos());
-//    scale_v(glm::vec3(2.f, 2.f, 2.f, 1.f), world.getChild("box")->scale());
+//    world.addChild("box", new entity::Entity(box));
+//    world.getChild("box")->translate(glm::vec3(0.f, 0.f, -.1f));
    // faces
 //    world.addChild("face1", new entity::Entity(rubix_face));
 //    translate_v(vec3(2.f, 0.f, 2.f), world.getChild("face1")->pos());
@@ -85,10 +73,10 @@ void init(void) {
 //    world.addChild("face2", new entity::Entity(rubix_face));
 //    translate_v(vec3(0.f, 2.f, 2.f), world.getChild("face2")->pos());
     // monkey
-//    myEntity.set_mesh(monkey);
-//    scale_v(glm::vec3(20.f, 20.f, 20.f, 1.f), myEntity.scale());
-//    rotate_m(-90, 0, myEntity.rot());
-//    rotate_m(-45, 1, myEntity.rot());
+    myEntity.set_mesh(monkey);
+    myEntity.scale(glm::vec3(.1f, .1f, .1f));
+    myEntity.rotate(45.f, glm::vec3(0, 1, 0));
+    myEntity.rotate(-45.f, myEntity.u());
     // reset camera
 //    std::cout << std::endl;
 //    std::cout << rotation(180, glm::vec3(1, 1, 0, 0)) * glm::vec3(1, .5, 0, 1) << std::endl;
@@ -106,7 +94,7 @@ void display(void) {
     glUniform4f(unifromBlendColor4f, 1, 1, 1, 1);
     glUniform4f(unifromBlendFactor4f, 0, 0, 0, 0);
     world.render();
-//    myEntity.render();
+    myEntity.render();
 
     glutSwapBuffers();
 }
@@ -117,7 +105,11 @@ void update() {
 //    rotate_m(5.f, glm::vec3(1, 0, 1, 1), glm::vec3(4, 0, 0, 1), &myEntity.getChild("box")->transform());
 //    *myEntity.pos() = (myCamera.coi() * 300);
 
-//    rotate_m(2.f, 1, world.getChild("pyramid1")->rot());
+    myEntity.rotate(8.f, myEntity.v());
+
+    world.getChild("pyramid1")->rotate(8.f, glm::vec3(1, 0, 0));
+    world.getChild("pyramid2")->rotate(8.f, glm::vec3(0, 1, 0));
+    world.getChild("pyramid3")->rotate(8.f, glm::vec3(0, 0, 1));
 //    rotate_m(4.f, 1, world.getChild("pyramid2")->rot());
 //    rotate_m(6.f, 1, world.getChild("pyramid3")->rot());
 
