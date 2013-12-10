@@ -1,8 +1,9 @@
 #include "ObjLoader.h"
 
-namespace objLoader {
+namespace game {
+namespace ObjLoader {
 
-Mesh *load(std::string fname) {
+game::Mesh *load(std::string fname) {
     std::fstream in;
     in.open(fname.c_str(), std::fstream::in);
     std::cout << fname << " open" << std::endl << "    ";
@@ -10,7 +11,7 @@ Mesh *load(std::string fname) {
     std::vector<glm::vec4> color;
     std::vector<glm::vec3> vertex, normal;
     std::vector<glm::vec2> uvmap;
-    Mesh *out = new Mesh();
+    game::Mesh *out = new game::Mesh();
     std::string type;
     while (in >> type) {
 //        std::cout << type << " ";
@@ -32,9 +33,6 @@ Mesh *load(std::string fname) {
             color.push_back(c);
         } else if (!type.compare("f")) {
             glm::vec4 c[3];
-            std::fill_n(c, 3, glm::vec4((rand() % 100) / 100.0,
-                                   (rand() % 100) / 100.0,
-                                   (rand() % 100) / 100.0, 1.f));
             glm::vec3 v[3];
             int a[4];
             char d;
@@ -53,6 +51,10 @@ Mesh *load(std::string fname) {
                 // color
                 if (color.size())
                     in >> d >> a[3], c[i] = color[a[3] - 1];
+                else
+                    c[i] = glm::vec4((rand() % 100) / 100.0,
+                                     (rand() % 100) / 100.0,
+                                     (rand() % 100) / 100.0, 1.f);
                 // TODO uvmap, normal
             }
             out->addFace(new Face(3, v, c, GL_TRIANGLES));
@@ -73,4 +75,5 @@ Mesh *load(std::string fname) {
     return out;
 }
 
+}
 }

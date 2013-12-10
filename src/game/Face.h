@@ -1,8 +1,9 @@
 #ifndef FACE_H_
 #define FACE_H_
 
-#include <vector>
-#include "../OpenGL.h"
+#include "OpenGL.h"
+
+namespace game {
 
 class Face {
 private:
@@ -19,5 +20,7 @@ Face* new_square(glm::vec4 col);
 Face* new_circle(glm::vec4 col, GLint nVertex);
 Face* new_circle_gradient(glm::vec4 side, glm::vec4 col, GLint nVertex);
 Face* new_arrow(glm::vec4 col);
+
+}
 
 #endif

@@ -1,14 +1,10 @@
 #ifndef MESH_H_
 #define MESH_H_
 
-#include <iostream>
-#include <vector>
-
-#include "../OpenGL.h"
-#include "../XGL.h"
 #include "Face.h"
+#include "Internal.h"
 
-namespace mesh {
+namespace game {
 
 class Mesh {
 	std::vector<Face *> faces;
@@ -21,6 +17,6 @@ public:
 
 Mesh *new_pyramid();
 
-};
+}
 
 #endif

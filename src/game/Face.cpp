@@ -1,5 +1,7 @@
 #include "Face.h"
 
+namespace game {
+
 Face::Face(int vertexCount, glm::vec3 *vertex, glm::vec4 *color, GLint mode) {
 //	cout << "V|";
 //	for (int i = 0; i < vertexCount; ++i)
@@ -56,4 +58,6 @@ Face::~Face() {
     // disable attrs
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
+}
+
 }

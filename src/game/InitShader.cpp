@@ -1,4 +1,4 @@
-#include "../include/Angel.h"
+#include "OpenGL.h"
 
 namespace Angel {
 

@@ -1,16 +1,17 @@
-c4opengl
-========
+OpenGL Rubix Cube
+=================
 
-The boring Connect-4 for OpenGL. A simple introduction to OpenGL and Shader Language.
+A simple introduction to OpenGL, Shader Language, transformations, viewing, and
+projection.
 
-![ScreenShot](https://raw.github.com/MGhareeb32/c4opengl/master/screenshot.png)
+![ScreenShot](https://raw.github.com/MGhareeb32/opengl-rubix-cube/master/screenshot.png)
 
-Easy Eclipse development
-========================
+Easy Eclipse development with MinGW
+===================================
 0. Clone the repo:
-      git clone https://github.com/MGhareeb32/c4opengl.git c4opengl
-1. Create a new Executable Hello World C++ Project in the c4opengl folder.
-2. Click next. Make sure you have Source set to 'src'.
+      git clone https://github.com/MGhareeb32/opengl-rubix-cube.git opengl-rubix-cube
+1. Create a new Executable Hello World C++ Project in the opengl-rubix-cube folder.
+2. Click next. Type 'src' into Source.
 3. Click Finish.
 4. Right click the project > Properties > C++ Genral >
    Paths and Symbols > Libraries.

@@ -1,6 +1,6 @@
 #include "Mesh.h"
 
-namespace mesh {
+namespace game {
 
 Mesh::Mesh() {
 }
@@ -11,7 +11,8 @@ Mesh::~Mesh() {
 }
 
 void Mesh::render(glm::mat4 transformation) {
-    xglSetModelMatrix(transformation);
+    game::setUniformModelMatrix(transformation);
+//    glUniformMatrix4fv(unifromModelMatrix, 1, GL_FALSE, &transformation[0][0]);
     for (int i = 0; i < faces.size(); ++i)
         faces[i]->render();
 }
