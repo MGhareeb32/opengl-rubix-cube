@@ -11,9 +11,6 @@
 namespace game {
 
 class Entity {
-
-    Mesh *mesh_;
-
     Entity* parent_;
     std::map<std::string, Entity*> children_;
 
@@ -23,11 +20,8 @@ class Entity {
 
 public:
 
-    Entity(Mesh *m = NULL);
+    Entity();
     virtual ~Entity();
-
-    Mesh* mesh() { return mesh_; }
-    void set_mesh(Mesh *m) { mesh_ = m; }
 
     int childrenCount() { return children_.size(); }
     std::vector<std::string> childrenNames();

@@ -4,7 +4,7 @@
 #include "../../game/Game.h"
 #include "SmallCube.h"
 
-class RubixCube : public game::Entity {
+class RubixCube : public game::MeshEntity {
     game::Mesh *axes, *monkey, *pyramid, *rubix, *flat;
 public:
     RubixCube();

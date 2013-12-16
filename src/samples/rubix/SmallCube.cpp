@@ -69,5 +69,5 @@ void CubeFace::render(bool selected) {
     glm::vec4 b = glm::vec4(.8f, .8f, 0.f, 1.f);
     float f = selected ? .8f + sin(game::global_time_ / 5.0) * .2f : 1.f;
     game::setUniformBlendColor(f * color_, b);
-    game::Entity::render();
+    game::MeshEntity::render();
 }

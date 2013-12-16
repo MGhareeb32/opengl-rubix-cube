@@ -13,7 +13,7 @@ static glm::vec4 COLORS[7]
         glm::vec4(1, 1, 0, 1),
         glm::vec4(1, 0, .2, 1) };
 
-class SmallCube : public game::Entity {
+class SmallCube : public game::MeshEntity {
     bool selected_;
     GLfloat spin_ang_;
     glm::vec3 spin_axis_;
@@ -28,7 +28,7 @@ public:
     bool* selected() { return &selected_; }
 };
 
-class CubeFace : public game::Entity {
+class CubeFace : public game::MeshEntity {
     glm::vec4 color_;
 public:
     CubeFace(game::Mesh *m, glm::vec3 p);

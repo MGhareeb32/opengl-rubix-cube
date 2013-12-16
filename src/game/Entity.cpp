@@ -2,9 +2,7 @@
 
 namespace game {
 
-Entity::Entity(game::Mesh *m) {
-    mesh_ = m;
-
+Entity::Entity() {
     parent_ = NULL;
     children_.clear();
 
@@ -142,9 +140,6 @@ void Entity::update() {
 // RENDER
 
 void Entity::render() {
-    // render self
-    if (mesh_)
-        mesh_->render(transform_);
     // render children
     std::map<std::string, Entity*>::iterator ch = children_.begin();
     while (ch != children_.end()) {

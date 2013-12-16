@@ -19,8 +19,9 @@
 
 #include "OpenGL.h"
 #include "Entity.h"
-#include "ObjLoader.h"
 #include "Camera.h"
+#include "ObjLoader.h"
+#include "MeshEntity.h"
 
 std::ostream &operator<<(std::ostream &out, const glm::vec2 &vec);
 std::ostream &operator<<(std::ostream &out, const glm::vec3 &vec);

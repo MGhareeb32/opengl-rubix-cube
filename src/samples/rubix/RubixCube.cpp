@@ -87,7 +87,7 @@ void RubixCube::update() {
         spin(90);
     if (game::key_down_['x'])
         spin(-90);
-    game::Entity::update();
+    game::MeshEntity::update();
 }
 
 void RubixCube::select(int axis, GLfloat n) {
