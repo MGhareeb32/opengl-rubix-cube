@@ -8,7 +8,8 @@ GLboolean key_down_[256], key_click_[256];
 GLint global_time_;
 
 GLint unifrom_model_matrix_, unifrom_view_matrix_;
-GLint unifrom_blend_color, unifrom_blend_factor;
+GLint unifrom_fog_color_, unifrom_fog_mag_;
+GLint unifrom_blend_color_, unifrom_blend_factor_;
 
 game::Entity* scene_;
 game::Camera* camera_;
@@ -40,10 +41,14 @@ void init() {
     unifrom_model_matrix_ = glGetUniformLocation(program, "model");
     // uniform mat4 view;
     unifrom_view_matrix_ = glGetUniformLocation(program, "view");
+    // uniform vec4 fog_color;
+    unifrom_fog_color_ = glGetUniformLocation(program, "fog_color");
+    // uniform float fog_mag;
+    unifrom_fog_mag_ = glGetUniformLocation(program, "fog_mag");
     // uniform glm::vec3 blend_color;
-    unifrom_blend_color = glGetUniformLocation(program, "blend_color");
+    unifrom_blend_color_ = glGetUniformLocation(program, "blend_color");
     // uniform glm::vec3 blend_factor;
-    unifrom_blend_factor = glGetUniformLocation(program, "blend_factor");
+    unifrom_blend_factor_ = glGetUniformLocation(program, "blend_factor");
 
     // controls
     for (int i = 0; i < 3; ++i)
@@ -52,13 +57,14 @@ void init() {
         key_down_[i] = key_click_[i] = 0;
     global_time_ = 0;
 
-    glClearColor(1.f, 1.f, 1.f, 1.f);
+    glClearColor(.2f, .2f, .2f, 1.f);
     glClearDepth(1.0);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     setUniformModelMatrix(glm::mat4(1));
     setUniformViewMatrix(glm::mat4(1));
+    setUniformFog(glm::vec4(0.f, 0.f, 0.f, 1.f), 2.f);
 }
 
 // INPUT
@@ -164,9 +170,14 @@ void setUniformViewMatrix(glm::mat4 m) {
     glUniformMatrix4fv(unifrom_view_matrix_, 1, GL_FALSE, &m[0][0]);
 }
 
+void setUniformFog(glm::vec4 color, GLfloat mag) {
+    glUniform4f(unifrom_fog_color_, color.x, color.y, color.z, color.w);
+    glUniform1f(unifrom_fog_mag_, mag);
+}
+
 void setUniformBlendColor(glm::vec4 c, glm::vec4 b) {
-    glUniform4f(unifrom_blend_color, c.x, c.y, c.z, c.w);
-    glUniform4f(unifrom_blend_factor, b.x, b.y, b.z, b.w);
+    glUniform4f(unifrom_blend_color_, c.x, c.y, c.z, c.w);
+    glUniform4f(unifrom_blend_factor_, b.x, b.y, b.z, b.w);
 }
 
 // SCENE

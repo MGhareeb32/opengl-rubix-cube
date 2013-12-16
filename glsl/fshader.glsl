@@ -1,8 +1,12 @@
 #version 330 core
 
+uniform vec4 fog_color;
+uniform float fog_mag;
+
 uniform vec4 blend_color;
 uniform vec4 blend_factor;
 
+in vec4 outPos;
 in vec4 outColor;
 
 vec3 rgb2hsv(vec3 c) {
@@ -24,16 +28,10 @@ vec3 hsv2rgb(vec3 c) {
 void main() {
     vec4 oldColorHSV = vec4(rgb2hsv(outColor.rgb), outColor.a);
     vec4 newColorHSV = vec4(rgb2hsv(blend_color.rgb), blend_color.a);
-    vec4 mixColorHSV  = vec4
-        (oldColorHSV.x * (1 - blend_factor.x)
-         + newColorHSV.x * blend_factor.x,
+    vec4 mixColorHSV  = mix(oldColorHSV, newColorHSV, blend_factor);
     
-         oldColorHSV.z,
+    //     outColor = ;
     
-         oldColorHSV.z,
-    
-         oldColorHSV.w * (1 - blend_factor.w)
-         + newColorHSV.w * blend_factor.w);
-    
-    gl_FragColor = vec4(hsv2rgb(mixColorHSV.xyz), mixColorHSV.a);
+    vec4 col = vec4(hsv2rgb(mixColorHSV.xyz), mixColorHSV.a);
+    gl_FragColor = mix(col, fog_color, clamp(fog_mag * outPos.z, 0, 1));
 }

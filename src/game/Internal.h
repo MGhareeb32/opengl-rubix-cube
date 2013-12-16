@@ -27,6 +27,9 @@ extern GLint global_time_;
 
 extern void setUniformModelMatrix(glm::mat4 f);
 extern void setUniformViewMatrix(glm::mat4 f);
+
+extern void setUniformFog(glm::vec4 color, GLfloat mag);
+
 extern void setUniformBlendColor(glm::vec4 c, glm::vec4 b);
 
 }

@@ -29,7 +29,7 @@ public:
 };
 
 class CubeFace : public game::Entity {
-    glm::vec4 color;
+    glm::vec4 color_;
 public:
     CubeFace(game::Mesh *m, glm::vec3 p);
     virtual ~CubeFace();

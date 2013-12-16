@@ -35,6 +35,7 @@ void setScene(Entity *scene, GLboolean destructOld = true);
 Entity* getScene();
 void setCamera(game::Camera* camera, GLboolean destructOld = true);
 game::Camera* getCamera();
+extern void setUniformFog(glm::vec4 color, GLfloat mag);
 
 }
 

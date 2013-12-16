@@ -59,15 +59,15 @@ CubeFace::CubeFace(game::Mesh *m, glm::vec3 p) {
     for (int i = 1; i < 3; ++i)
         if (abs(p[maxI]) < abs(p[i]))
             maxI = i;
-    color = COLORS[(int) ((p[maxI] > 0 ? 0 : 1) + maxI * 2)];
+    color_ = COLORS[(int) ((p[maxI] > 0 ? 0 : 1) + maxI * 2)];
 }
 
 CubeFace::~CubeFace() {
 }
 
 void CubeFace::render(bool selected) {
-    glm::vec4 b = glm::vec4(.8f, .8f, .8f, 1.f);
+    glm::vec4 b = glm::vec4(.8f, .8f, 0.f, 1.f);
     float f = selected ? .8f + sin(game::global_time_ / 5.0) * .2f : 1.f;
-    game::setUniformBlendColor(f * color, b);
+    game::setUniformBlendColor(f * color_, b);
     game::Entity::render();
 }
