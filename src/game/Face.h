@@ -8,9 +8,10 @@ namespace game {
 class Face {
 private:
     int nVertex;
-    GLuint vao, vbo[2], drawMode;
+    GLuint vao, vbo[3], drawMode;
 public:
-    Face(int vertexCount, glm::vec3 *vertex, glm::vec4 *color, GLint mode);
+    Face(int vertexCount, glm::vec3 *vertex, glm::vec3 *normal,
+         glm::vec4 *color, GLint mode);
     int getVertexCount();
     void render();
     virtual ~Face();

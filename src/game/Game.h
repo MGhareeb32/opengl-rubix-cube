@@ -20,6 +20,7 @@
 #include "OpenGL.h"
 #include "Entity.h"
 #include "Camera.h"
+#include "Light.h"
 #include "ObjLoader.h"
 #include "MeshEntity.h"
 
@@ -32,11 +33,15 @@ namespace game {
 void init(int argc, char **argv, GLint w, GLint h, std::string t);
 void start(GLint f);
 
-void setScene(Entity *scene, GLboolean destructOld = true);
-Entity* getScene();
-void setCamera(game::Camera* camera, GLboolean destructOld = true);
-game::Camera* getCamera();
-extern void setUniformFog(glm::vec4 color, GLfloat mag);
+void sceneSet(Entity *scene, GLboolean destructOld = true);
+Entity* sceneGet();
+
+void cameraSet(game::Camera* camera, GLboolean destructOld = true);
+game::Camera* cameraGet();
+
+game::Light* lightGet();
+
+extern void fogSet(glm::vec4 color, GLfloat mag);
 
 }
 

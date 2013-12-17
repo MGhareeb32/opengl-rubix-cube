@@ -12,3 +12,7 @@
 #include "../../include/glm/gtc/quaternion.hpp"
 #include "../../include/glm/gtc/matrix_transform.hpp"
 #include "../../include/glm/gtx/transform2.hpp"
+
+extern std::ostream &operator<<(std::ostream &out, const glm::vec2 &vec);
+extern std::ostream &operator<<(std::ostream &out, const glm::vec3 &vec);
+extern std::ostream &operator<<(std::ostream &out, const glm::vec4 &vec);

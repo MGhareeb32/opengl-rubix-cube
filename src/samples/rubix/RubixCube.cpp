@@ -8,7 +8,7 @@ RubixCube::RubixCube() {
     flat = game::ObjLoader::load("res/mesh/flat-face.obj");
     // initialize faces
 //    set_mesh(axes);
-    game::setCamera(new game::Camera());
+    game::cameraSet(new game::Camera());
     // faces
     for (GLfloat x = -1.f; x <= +1.f; x += 1.f)
         for (GLfloat y = -1.f; y <= +1.f; y += 1.f)
@@ -29,6 +29,7 @@ RubixCube::RubixCube() {
 //    getChild("pyramid3")->translate(glm::vec3(0.f, 0.f, 1.f));
 //     monkey
     scale(glm::vec3(.4f, .4f, .4f));
+    game::lightGet()->translate(glm::vec3(0, 0, 100));
 }
 
 RubixCube::~RubixCube() {
@@ -46,8 +47,9 @@ RubixCube::~RubixCube() {
 }
 
 void RubixCube::update() {
+    game::lightGet()->rotate(2.f, glm::vec3(0, 0, 1), glm::vec3(0, 0, 0));
     // camera
-    game::Camera* myCamera = game::getCamera();
+    game::Camera* myCamera = game::cameraGet();
     bool speed = game::key_down_[' '];
     if (game::key_down_['w'])
         myCamera->rotate(+(speed * 4 + 1), myCamera->u());
@@ -63,6 +65,11 @@ void RubixCube::update() {
         myCamera->rotate(+(speed * 4 + 1), glm::vec3(0, 0, 1));
     if (game::key_down_['a'])
         myCamera->rotate(-(speed * 4 + 1), glm::vec3(0, 0, 1));
+
+    if (game::key_down_['A'])
+        myCamera->translate(-myCamera->u() * .1f);
+    if (game::key_down_['D'])
+        myCamera->translate(myCamera->u() * .1f);
     // select
     if (game::key_down_['1'])
         select(0, -1);

@@ -1,13 +1,18 @@
 #version 330 core
 
+uniform mat4 model, view;
+uniform vec3 light_pos;
+uniform float light_ambient;
+
 uniform vec4 fog_color;
 uniform float fog_mag;
 
 uniform vec4 blend_color;
 uniform vec4 blend_factor;
 
-in vec4 outPos;
-in vec4 outColor;
+in vec4 fPos;
+in vec4 fColor;
+in vec3 fNormal;
 
 vec3 rgb2hsv(vec3 c) {
     vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
@@ -26,12 +31,24 @@ vec3 hsv2rgb(vec3 c) {
 }
 
 void main() {
-    vec4 oldColorHSV = vec4(rgb2hsv(outColor.rgb), outColor.a);
+
+    mat3 N = mat3((model));
+    mat3 M = inverse(N);
+    // light
+    float diff = max(0, dot(normalize(N * light_pos), normalize(N * fNormal)))
+               + light_ambient;
+    vec4 color = vec4((diff * fColor).xyz, fColor.w);
+
+    // blend
+    vec4 oldColorHSV = vec4(rgb2hsv(color.rgb), fColor.a);
     vec4 newColorHSV = vec4(rgb2hsv(blend_color.rgb), blend_color.a);
-    vec4 mixColorHSV  = mix(oldColorHSV, newColorHSV, blend_factor);
-    
-    //     outColor = ;
-    
-    vec4 col = vec4(hsv2rgb(mixColorHSV.xyz), mixColorHSV.a);
-    gl_FragColor = mix(col, fog_color, clamp(fog_mag * outPos.z, 0, 1));
+    vec4 mixColorHSV = mix(oldColorHSV, newColorHSV, blend_factor);
+    vec4 mixColorRGB = vec4(hsv2rgb(mixColorHSV.xyz), mixColorHSV.a);
+    //vec4 mixColorRGB = vec4(1, 1, 1, 1);
+
+
+    // fog
+    vec4 afterFog = mix(mixColorRGB, fog_color, clamp(fog_mag * fPos.z, 0, 1));
+
+    gl_FragColor = afterFog;
 }

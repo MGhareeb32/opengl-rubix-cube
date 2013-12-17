@@ -1,19 +1,5 @@
 #include "Game.h"
 
-namespace game {
-
-GLboolean mouse_down_[3], mouse_click_[3];
-glm::vec2 mouse_pos_, mouse_pos_prev_;
-GLboolean key_down_[256], key_click_[256];
-GLint global_time_;
-
-GLint unifrom_model_matrix_, unifrom_view_matrix_;
-GLint unifrom_fog_color_, unifrom_fog_mag_;
-GLint unifrom_blend_color_, unifrom_blend_factor_;
-
-game::Entity* scene_;
-game::Camera* camera_;
-
 std::ostream &operator<<(std::ostream &out, const glm::vec2 &vec) {
     out << std::fixed << "(" << vec.x << " " << vec.y << ")";
     return out;
@@ -30,6 +16,22 @@ std::ostream &operator<<(std::ostream &out, const glm::vec4 &vec) {
     return out;
 }
 
+namespace game {
+
+GLboolean mouse_down_[3], mouse_click_[3];
+glm::vec2 mouse_pos_, mouse_pos_prev_;
+GLboolean key_down_[256], key_click_[256];
+GLint global_time_;
+
+GLint unifrom_model_matrix_, unifrom_view_matrix_;
+GLint unifrom_light_pos_, unifrom_light_ambient_;
+GLint unifrom_fog_color_, unifrom_fog_mag_;
+GLint unifrom_blend_color_, unifrom_blend_factor_;
+
+game::Entity* scene_;
+game::Camera* camera_;
+game::Light* light_ = new Light();
+
 // OPENGL
 
 void init() {
@@ -41,6 +43,10 @@ void init() {
     unifrom_model_matrix_ = glGetUniformLocation(program, "model");
     // uniform mat4 view;
     unifrom_view_matrix_ = glGetUniformLocation(program, "view");
+    // uniform vec3 light_pos;
+    unifrom_light_pos_ = glGetUniformLocation(program, "light_pos");
+    // uniform float light_ambient;
+    unifrom_light_ambient_ = glGetUniformLocation(program, "light_ambient");
     // uniform vec4 fog_color;
     unifrom_fog_color_ = glGetUniformLocation(program, "fog_color");
     // uniform float fog_mag;
@@ -64,7 +70,7 @@ void init() {
 
     setUniformModelMatrix(glm::mat4(1));
     setUniformViewMatrix(glm::mat4(1));
-    setUniformFog(glm::vec4(0.f, 0.f, 0.f, 1.f), 2.f);
+    fogSet(glm::vec4(0.f, 0.f, 0.f, 1.f), 0.f);
 }
 
 // INPUT
@@ -100,6 +106,10 @@ void display(void) {
     if (camera_)
         setUniformViewMatrix
             (camera_->getProjectionMatrix() * camera_->getViewMatrix());
+    if (light_)
+        glUniform3f(unifrom_light_pos_,
+                    light_->o().x, light_->o().y, light_->o().z),
+        glUniform1f(unifrom_light_ambient_, light_->ambient());
     if (scene_)
         scene_->render();
 
@@ -170,7 +180,7 @@ void setUniformViewMatrix(glm::mat4 m) {
     glUniformMatrix4fv(unifrom_view_matrix_, 1, GL_FALSE, &m[0][0]);
 }
 
-void setUniformFog(glm::vec4 color, GLfloat mag) {
+void fogSet(glm::vec4 color, GLfloat mag) {
     glUniform4f(unifrom_fog_color_, color.x, color.y, color.z, color.w);
     glUniform1f(unifrom_fog_mag_, mag);
 }
@@ -182,24 +192,32 @@ void setUniformBlendColor(glm::vec4 c, glm::vec4 b) {
 
 // SCENE
 
-void setScene(game::Entity *scene, GLboolean destructOld) {
+void sceneSet(game::Entity *scene, GLboolean destructOld) {
     if (destructOld && scene_)
         scene_->~Entity();
     scene_ = scene;
 }
 
-Entity* getScene() {
+Entity* sceneGet() {
     return scene_;
 }
 
-void setCamera(game::Camera *camera, GLboolean destructOld) {
+// CAMERA
+
+void cameraSet(game::Camera *camera, GLboolean destructOld) {
     if (destructOld && camera_)
         camera_->~Camera();
     camera_ = camera;
 }
 
-Camera* getCamera() {
+Camera* cameraGet() {
     return camera_;
+}
+
+// LIGHT
+
+Light* lightGet() {
+    return light_;
 }
 
 };

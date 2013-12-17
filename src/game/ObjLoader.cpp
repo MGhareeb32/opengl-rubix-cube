@@ -33,7 +33,7 @@ game::Mesh *load(std::string fname) {
             color.push_back(c);
         } else if (!type.compare("f")) {
             glm::vec4 c[3];
-            glm::vec3 v[3];
+            glm::vec3 v[3], vn[3];
             int a[4];
             char d;
             for (int i = 0; i < 3; ++i) {
@@ -48,6 +48,8 @@ game::Mesh *load(std::string fname) {
                     in >> a[2];
                 // coord
                 v[i] = vertex[a[0] - 1];
+                // normal
+                vn[i] = normal[a[0] - 1];
                 // color
                 if (color.size())
                     in >> d >> a[3], c[i] = color[a[3] - 1];
@@ -57,7 +59,7 @@ game::Mesh *load(std::string fname) {
                                      (rand() % 100) / 100.0, 1.f);
                 // TODO uvmap, normal
             }
-            out->addFace(new Face(3, v, c, GL_TRIANGLES));
+            out->addFace(new Face(3, v, vn, c, GL_TRIANGLES));
         } else {
 //			cout << "faketh";
             getline(in, type);
