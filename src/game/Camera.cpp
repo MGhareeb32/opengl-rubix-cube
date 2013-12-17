@@ -13,7 +13,6 @@ Camera::~Camera() {
 }
 
 void Camera::lookAt(glm::vec3 eye, glm::vec3 coi, glm::vec3 upv) {
-    std::cout << "lookAt" << std::endl;
     resetTransform();
 
     glm::vec3 newN = glm::normalize(eye - coi);

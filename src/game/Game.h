@@ -21,8 +21,9 @@
 #include "Entity.h"
 #include "Camera.h"
 #include "Light.h"
-#include "ObjLoader.h"
+#include "resource/Mesh.h"
 #include "MeshEntity.h"
+#include "resource/ResMgr.h"
 
 std::ostream &operator<<(std::ostream &out, const glm::vec2 &vec);
 std::ostream &operator<<(std::ostream &out, const glm::vec3 &vec);

@@ -10,7 +10,7 @@ uniform float fog_mag;
 uniform vec4 blend_color;
 uniform vec4 blend_factor;
 
-in vec4 fPos;
+in vec3 fPos;
 in vec4 fColor;
 in vec3 fNormal;
 
@@ -32,10 +32,12 @@ vec3 hsv2rgb(vec3 c) {
 
 void main() {
 
-    mat3 N = mat3((model));
-    mat3 M = inverse(N);
+    mat4 N = mat4(view);
+    mat4 M = inverse(N);
+    vec3 light = (vec4(light_pos, 1)).xyz;
     // light
-    float diff = max(0, dot(normalize(N * light_pos), normalize(N * fNormal)))
+    float diff = max(0, dot(normalize(light - vec3(fPos)),
+                     normalize(vec3(fNormal))));
                + light_ambient;
     vec4 color = vec4((diff * fColor).xyz, fColor.w);
 

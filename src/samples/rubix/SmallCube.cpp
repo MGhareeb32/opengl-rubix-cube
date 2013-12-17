@@ -33,7 +33,7 @@ SmallCube::~SmallCube() {
 }
 
 void SmallCube::update() {
-    if (abs(spin_ang_) > 10) {
+    if (abs(spin_ang_) >= 5) {
         GLfloat d = (spin_ang_ > 0 ? -1 : 1) * 10.f;
         spin_ang_ += d;
         rotate(d, spin_axis_, glm::vec3(0, 0, 0));

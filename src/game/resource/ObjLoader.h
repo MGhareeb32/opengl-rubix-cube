@@ -4,7 +4,7 @@
 #include <fstream>
 #include <string>
 
-#include "OpenGL.h"
+#include "../OpenGL.h"
 #include "Mesh.h"
 
 namespace game {

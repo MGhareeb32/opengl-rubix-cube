@@ -1,14 +1,17 @@
 #ifndef FACE_H_
 #define FACE_H_
 
-#include "OpenGL.h"
+#include "../OpenGL.h"
+#include "../internal.h"
+#include "Material.h"
 
 namespace game {
 
 class Face {
 private:
-    int nVertex;
-    GLuint vao, vbo[3], drawMode;
+    int nVertex_;
+    GLuint vao_, vbo_[3], drawMode_;
+    Material *mtl_;
 public:
     Face(int vertexCount, glm::vec3 *vertex, glm::vec3 *normal,
          glm::vec4 *color, GLint mode);

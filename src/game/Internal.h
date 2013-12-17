@@ -1,10 +1,12 @@
 #ifndef INTERNAL_H_
 #define INTERNAL_H_
 
+#include <algorithm>
 #include <exception>
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cmath>
 #include <map>
 
 #include "../../include/Angel.h"

@@ -1,5 +1,6 @@
 #include "game/Game.h"
 #include "../src/samples/rubix/RubixCube.h"
+#include "../src/samples/meshviewer/MeshViewer.h"
 
 const GLfloat DISPLAY_WIDTH = 640;
 const GLfloat DISPLAY_HEIGHT = 640;

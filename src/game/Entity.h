@@ -4,7 +4,7 @@
 #include <map>
 #include <vector>
 
-#include "Mesh.h"
+#include "resource/Mesh.h"
 #include "OpenGL.h"
 #include "Internal.h"
 

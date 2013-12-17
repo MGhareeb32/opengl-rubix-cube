@@ -2,7 +2,7 @@
 
 namespace game {
 
-Mesh::Mesh() {
+Mesh::Mesh(std::string uid) : Resource(uid) {
 }
 
 Mesh::~Mesh() {

@@ -1,5 +1,7 @@
 #include "Game.h"
 
+// OUTPUT VECTORS
+
 std::ostream &operator<<(std::ostream &out, const glm::vec2 &vec) {
     out << std::fixed << "(" << vec.x << " " << vec.y << ")";
     return out;

@@ -17,7 +17,6 @@ Entity::~Entity() {
 // CHILDREN
 
 Entity* Entity::addChild(std::string k, Entity *v) {
-    std::cout << "addChild " << k << std::endl;
     if (v->parent_)
         throw std::exception();
     children_[k] = v;
@@ -26,7 +25,6 @@ Entity* Entity::addChild(std::string k, Entity *v) {
 }
 
 Entity* Entity::removeChild(std::string k) {
-    std::cout << "removeChild " << k << std::endl;
     Entity *v = children_[k];
     children_[k]->parent_ = NULL;
     children_.erase(k);
