@@ -27,6 +27,10 @@ GLint global_time_;
 
 GLint unifrom_model_matrix_, unifrom_view_matrix_;
 GLint unifrom_light_pos_, unifrom_light_ambient_;
+
+GLint unifrom_mtl_ka_, unifrom_mtl_kd_, unifrom_mtl_ks_;
+GLint unifrom_mtl_ns_, unifrom_mtl_tr_;
+
 GLint unifrom_fog_color_, unifrom_fog_mag_;
 GLint unifrom_blend_color_, unifrom_blend_factor_;
 
@@ -49,6 +53,13 @@ void init() {
     unifrom_light_pos_ = glGetUniformLocation(program, "light_pos");
     // uniform float light_ambient;
     unifrom_light_ambient_ = glGetUniformLocation(program, "light_ambient");
+    // uniform vec3 ka, kd, ks;
+    unifrom_mtl_ka_ = glGetUniformLocation(program, "ka");
+    unifrom_mtl_kd_ = glGetUniformLocation(program, "kd");
+    unifrom_mtl_ks_ = glGetUniformLocation(program, "ks");
+    // uniform float ns, tr;
+    unifrom_mtl_ns_ = glGetUniformLocation(program, "ns");
+    unifrom_mtl_tr_ = glGetUniformLocation(program, "tr");
     // uniform vec4 fog_color;
     unifrom_fog_color_ = glGetUniformLocation(program, "fog_color");
     // uniform float fog_mag;
@@ -57,6 +68,7 @@ void init() {
     unifrom_blend_color_ = glGetUniformLocation(program, "blend_color");
     // uniform glm::vec3 blend_factor;
     unifrom_blend_factor_ = glGetUniformLocation(program, "blend_factor");
+    std::cout << "uniforms loaded" << std::endl;
 
     // controls
     for (int i = 0; i < 3; ++i)
@@ -72,6 +84,7 @@ void init() {
 
     setUniformModelMatrix(glm::mat4(1));
     setUniformViewMatrix(glm::mat4(1));
+    mtlSet(new Material("default"));
     fogSet(glm::vec4(0.f, 0.f, 0.f, 1.f), 0.f);
 }
 
@@ -214,6 +227,16 @@ void cameraSet(game::Camera *camera, GLboolean destructOld) {
 
 Camera* cameraGet() {
     return camera_;
+}
+
+// MATERIAL
+
+void mtlSet(Material* mtl) {
+    glUniform3f(unifrom_mtl_ka_, mtl->ka().x, mtl->ka().y, mtl->ka().z);
+    glUniform3f(unifrom_mtl_kd_, mtl->kd().x, mtl->kd().y, mtl->kd().z);
+    glUniform3f(unifrom_mtl_ks_, mtl->ks().x, mtl->ks().y, mtl->ks().z);
+    glUniform1f(unifrom_mtl_ns_, mtl->ns());
+    glUniform1f(unifrom_mtl_tr_, mtl->tr());
 }
 
 // LIGHT

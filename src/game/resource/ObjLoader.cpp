@@ -11,7 +11,6 @@ game::Mesh *load(std::string fname) {
     std::vector<glm::vec3> vertex, normal;
     std::vector<glm::vec2> uvmap;
     game::Mesh *out = new game::Mesh(fname);
-    game::Material *mtl = NULL;
     std::string type;
     while (in >> type) {
         if (!type.compare("v")) {
@@ -32,7 +31,6 @@ game::Mesh *load(std::string fname) {
             color.push_back(c);
         } else if (!type.compare("mtllib")) {
             in >> type;
-            mtl = (Material*)ObjLoader::load(type);
         } else if (!type.compare("f")) {
             glm::vec4 c[3];
             glm::vec3 v[3], vn[3];
@@ -67,7 +65,6 @@ game::Mesh *load(std::string fname) {
         }
     }
     in.close();
-    out->set_mtl(mtl);
     return out;
 }
 

@@ -37,10 +37,12 @@ void start(GLint f);
 void sceneSet(Entity *scene, GLboolean destructOld = true);
 Entity* sceneGet();
 
-void cameraSet(game::Camera* camera, GLboolean destructOld = true);
-game::Camera* cameraGet();
+void cameraSet(Camera* camera, GLboolean destructOld = true);
+Camera* cameraGet();
 
-game::Light* lightGet();
+extern void mtlSet(Material* mtl);
+
+Light* lightGet();
 
 extern void fogSet(glm::vec4 color, GLfloat mag);
 

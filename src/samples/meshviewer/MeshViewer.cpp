@@ -1,21 +1,19 @@
 #include "MeshViewer.h"
 
 MeshViewer::MeshViewer() {
-    set_mesh(game::ObjLoader::load("res/mesh/sphere.obj"));
+    set_mesh((game::Mesh*)game::ResMgr::load("res/mesh/lego.obj"));
+    set_mtl((game::Material*)game::ResMgr::load("res/mesh/lego.mtl"));
     game::Camera *cam = new game::Camera();
     game::cameraSet(cam);
     scale(glm::vec3(.4f, .4f, .4f));
-//    game::lightGet()->translate(cam->u());
-    //    game::lightGet()->translate(cam->v());
-        game::lightGet()->translate(cam->n());
-//    cam->addChild("light", game::lightGet());
+    game::lightGet()->translate(glm::vec3(2, 0, 0));
 }
 
 MeshViewer::~MeshViewer() {
 }
 
 void MeshViewer::update() {
-    game::lightGet()->rotate(5.f, glm::vec3(-1, 0, 0), glm::vec3(0, 0, 0));
+    rotate(1.f, glm::vec3(0, 0, 1), glm::vec3(0, 0, 0));
     // camera
     game::Camera* myCamera = game::cameraGet();
     bool speed = game::key_down_[' '];
