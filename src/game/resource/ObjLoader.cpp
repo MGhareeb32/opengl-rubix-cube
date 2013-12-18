@@ -15,7 +15,7 @@ game::Mesh *load(std::string fname) {
     while (in >> type) {
         if (!type.compare("v")) {
             glm::vec3 v;
-            in >> v.x >> v.z >> v.y;
+            in >> v.x >> v.y >> v.z;
             vertex.push_back(v);
         } else if (!type.compare("vt")) {
             glm::vec2 vt;
@@ -59,7 +59,7 @@ game::Mesh *load(std::string fname) {
                                      1.0,
                                      1.0, 1.f);
             }
-            out->addFace(new Face(3, v, vn, c, GL_TRIANGLES));
+            out->addFace(new Face(3, v, vn, c, GL_TRIANGLE_STRIP));
         } else {
             getline(in, type);
         }

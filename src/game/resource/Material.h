@@ -14,15 +14,15 @@ public:
              glm::vec3 ka = glm::vec3(.2f, .2f, .2f),
              glm::vec3 kd = glm::vec3(.8f, .8f, .8f),
              glm::vec3 ks = glm::vec3(1.f, 1.f, 1.f), GLfloat ns = 0.f,
-             GLfloat tr = 1.f);
-    virtual ~Material();
+             GLfloat tr = 1.f)
+        : Resource(uid), ka_(ka), kd_(kd), ks_(ks), ns_(ns), tr_(tr) {};
+    ~Material() {};
 
     glm::vec3 ka() { return ka_; }
     glm::vec3 kd() { return kd_; }
     glm::vec3 ks() { return ks_; }
     GLfloat ns() { return ns_; }
     GLfloat tr() { return tr_; }
-
 };
 
 }

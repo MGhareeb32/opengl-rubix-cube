@@ -10,13 +10,19 @@ namespace game{
 class Mesh : public Resource {
     std::vector<Face *> faces;
 public:
-	Mesh(std::string uid);
-	void addFace(Face *f) { faces.push_back(f); }
-    void render(glm::mat4 transformation);
-	virtual ~Mesh();
-};
+	Mesh(std::string uid) : Resource(uid) {};
+	~Mesh() {
+	    for (int i = 0; i < faces.size(); ++i)
+	        faces[i]->~Face();
+	}
 
-Mesh *new_pyramid();
+	void addFace(Face *f) { faces.push_back(f); }
+    void render(glm::mat4 transformation) {
+        game::setUniformModelMatrix(transformation);
+        for (int i = 0; i < faces.size(); ++i)
+            faces[i]->render();
+    }
+};
 
 }
 

@@ -3,7 +3,7 @@
 namespace game {
 
 Camera::Camera(GLfloat xleft, GLfloat xright, GLfloat ybottom, GLfloat ytop,
-        GLfloat znear, GLfloat zfar) {
+        GLfloat znear, GLfloat zfar): Entity() {
     near_ = glm::vec3(xleft, ybottom, znear);
     far_ = glm::vec3(xright, ytop, zfar);
     lookAt(glm::vec3(.1f, .1f, .1f), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1));

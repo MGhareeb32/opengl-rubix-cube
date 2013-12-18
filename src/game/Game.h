@@ -31,9 +31,6 @@ std::ostream &operator<<(std::ostream &out, const glm::vec4 &vec);
 
 namespace game {
 
-void init(int argc, char **argv, GLint w, GLint h, std::string t);
-void start(GLint f);
-
 void sceneSet(Entity *scene, GLboolean destructOld = true);
 Entity* sceneGet();
 
@@ -42,9 +39,13 @@ Camera* cameraGet();
 
 extern void mtlSet(Material* mtl);
 
-Light* lightGet();
+extern void sceneColorSet(glm::vec3 color);
+extern Light* lightGet();
 
 extern void fogSet(glm::vec4 color, GLfloat mag);
+
+void init(int argc, char **argv, GLint w, GLint h, std::string t);
+void start(GLint f);
 
 }
 

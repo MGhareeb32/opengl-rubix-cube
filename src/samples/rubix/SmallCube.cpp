@@ -18,8 +18,8 @@ SmallCube::SmallCube(glm::vec3 p, game::Mesh *flat, game::Mesh *rubix) {
         Entity* small = addChild
             (name, new CubeFace(diffAng <= 60 ? rubix : flat, p + v));
         // position
-        GLdouble rot = -acos(glm::dot(v, small->n())) * 180 / M_PI;
-        glm::vec3 axis = glm::cross(v, small->n());
+        GLdouble rot = -acos(glm::dot(v, small->v())) * 180 / M_PI;
+        glm::vec3 axis = glm::cross(v, small->v());
         small->scale(glm::vec3(v.x ? v.x : 1, v.y ? v.y : 1, v.z ? v.z : 1));
         if (glm::dot(axis, axis) > EPS)
             small->rotate(rot, axis);
@@ -54,12 +54,21 @@ void SmallCube::render() {
 // CUBE FACE
 
 CubeFace::CubeFace(game::Mesh *m, glm::vec3 p) {
+
+    static game::Material* COLORS[7]
+        = { (game::Material*)game::ResMgr::load("res/mesh/rubix-1.mtl"),
+            (game::Material*)game::ResMgr::load("res/mesh/rubix-2.mtl"),
+            (game::Material*)game::ResMgr::load("res/mesh/rubix-3.mtl"),
+            (game::Material*)game::ResMgr::load("res/mesh/rubix-4.mtl"),
+            (game::Material*)game::ResMgr::load("res/mesh/rubix-5.mtl"),
+            (game::Material*)game::ResMgr::load("res/mesh/rubix-6.mtl") };
+
     set_mesh(m);
     int maxI = 0;
     for (int i = 1; i < 3; ++i)
         if (abs(p[maxI]) < abs(p[i]))
             maxI = i;
-    color_ = COLORS[(int) ((p[maxI] > 0 ? 0 : 1) + maxI * 2)];
+    set_mtl(COLORS[(int) ((p[maxI] > 0 ? 0 : 1) + maxI * 2)]);
 }
 
 CubeFace::~CubeFace() {
@@ -68,6 +77,5 @@ CubeFace::~CubeFace() {
 void CubeFace::render(bool selected) {
     glm::vec4 b = glm::vec4(.8f, .8f, 0.f, 1.f);
     float f = selected ? .8f + sin(game::global_time_ / 5.0) * .2f : 1.f;
-    game::setUniformBlendColor(f * color_, b);
     game::MeshEntity::render();
 }

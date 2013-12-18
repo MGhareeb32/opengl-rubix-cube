@@ -5,23 +5,23 @@ namespace ResMgr {
 
 std::map<std::string, Resource*> resources_;
 
-std::vector<std::string> getObjMtls(std::string fname) {
-    std::fstream in;
-    in.open(fname.c_str(), std::fstream::in);
-    //
-    std::vector<std::string> out;
-    std::string type;
-    while (in >> type) {
-        if (!type.compare("mtllib")) {
-            in >> type;
-            out.push_back(type);
-        } else {
-            getline(in, type);
-        }
-    }
-    in.close();
-    return out;
-}
+//std::vector<std::string> getObjMtls(std::string fname) {
+//    std::fstream in;
+//    in.open(fname.c_str(), std::fstream::in);
+//    //
+//    std::vector<std::string> out;
+//    std::string type;
+//    while (in >> type) {
+//        if (!type.compare("mtllib")) {
+//            in >> type;
+//            out.push_back(type);
+//        } else {
+//            getline(in, type);
+//        }
+//    }
+//    in.close();
+//    return out;
+//}
 
 Resource* load(std::string file) {
     // already there
@@ -40,12 +40,8 @@ Resource* load(std::string file) {
     std::cout << "from " << dir << std::endl;
     Resource* out = NULL;
     // OBJ
-    if (!extension.compare("obj")) {
-        std::vector<std::string> mtls = getObjMtls(file);
-        for (int i = 0; i < mtls.size(); ++i)
-            load(dir + mtls[i]);
+    if (!extension.compare("obj"))
         out = ObjLoader::load(file);
-    }
     // MTL
     else if (!extension.compare("mtl"))
         out = MtlLoader::load(file);

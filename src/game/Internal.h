@@ -29,9 +29,12 @@ extern GLint global_time_;
 
 extern void setUniformModelMatrix(glm::mat4 f);
 extern void setUniformViewMatrix(glm::mat4 f);
+extern void setUniformProjMatrix(glm::mat4 m);
 
 class Material;
 extern void mtlSet(Material* mtl);
+
+extern void sceneColorSet(glm::vec3 color);
 
 extern void fogSet(glm::vec4 color, GLfloat mag);
 

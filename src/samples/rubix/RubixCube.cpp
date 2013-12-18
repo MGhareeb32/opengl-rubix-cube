@@ -1,12 +1,8 @@
 #include "RubixCube.h"
 
 RubixCube::RubixCube() {
-    axes = (game::Mesh*)game::ResMgr::load("res/mesh/axes.obj");
-    monkey = (game::Mesh*)game::ResMgr::load("res/mesh/monkey-smooth.obj");
-    pyramid = (game::Mesh*)game::ResMgr::load("res/mesh/pyramid.obj");
     rubix = (game::Mesh*)game::ResMgr::load("res/mesh/rubix-face.obj");
     flat = (game::Mesh*)game::ResMgr::load("res/mesh/flat-face.obj");
-    sphere = (game::Mesh*)game::ResMgr::load("res/mesh/sphere.obj");
     // initialize faces
     game::cameraSet(new game::Camera());
     // faces
@@ -15,11 +11,9 @@ RubixCube::RubixCube() {
             for (GLfloat z = -1.f; z <= +1.f; z += 1.f)
                 if (x != y || y != z || z != 0.f)
                     addChild(std::string("cube") + char(childrenCount() + '0'),
-                             new SmallCube(glm::vec3(x, y, z), flat, sphere));
+                             new SmallCube(glm::vec3(x, y, z), flat, rubix));
     //
     scale(glm::vec3(.4f, .4f, .4f));
-    game::lightGet()->addChild("ball", new game::MeshEntity(sphere));
-    game::lightGet()->scale(glm::vec3(.1f, .1f, .1f));
     game::lightGet()->translate(glm::vec3(0, 10, 0));
 }
 
@@ -30,15 +24,12 @@ RubixCube::~RubixCube() {
         removeChild(ch[i]);
         c->~Entity();
     }
-    axes->~Mesh();
-    monkey->~Mesh();
-    pyramid->~Mesh();
     rubix->~Mesh();
     flat->~Mesh();
 }
 
 void RubixCube::update() {
-    game::lightGet()->rotate(5.f, glm::vec3(0, 0, 1), glm::vec3(0, 0, 0));
+    // game::lightGet()->rotate(5.f, glm::vec3(0, 0, 1), glm::vec3(0, 0, 0));
     // camera
     game::Camera* myCamera = game::cameraGet();
     bool speed = game::key_down_[' '];

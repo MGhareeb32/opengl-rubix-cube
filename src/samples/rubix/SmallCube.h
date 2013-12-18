@@ -5,14 +5,6 @@
 
 const GLfloat EPS = 0.0001f;
 
-static glm::vec4 COLORS[7]
-    = { glm::vec4(1, 0, 0, 1),
-        glm::vec4(0, 1, 0, 1),
-        glm::vec4(0, 0, 1, 1),
-        glm::vec4(1, 0, 1, 1),
-        glm::vec4(1, 1, 0, 1),
-        glm::vec4(1, 0, .2, 1) };
-
 class SmallCube : public game::MeshEntity {
     bool selected_;
     GLfloat spin_ang_;
@@ -29,7 +21,6 @@ public:
 };
 
 class CubeFace : public game::MeshEntity {
-    glm::vec4 color_;
 public:
     CubeFace(game::Mesh *m, glm::vec3 p);
     virtual ~CubeFace();
