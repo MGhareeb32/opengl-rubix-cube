@@ -32,34 +32,25 @@ game::Mesh *load(std::string fname) {
         } else if (!type.compare("mtllib")) {
             in >> type;
         } else if (!type.compare("f")) {
-            glm::vec4 c[3];
             glm::vec3 v[3], vn[3];
+            glm::vec2 vt[3];
             int a;
             char d;
             for (int i = 0; i < 3; ++i) {
                 // v/vt/vn
                 // coord
                 if (vertex.size())
-                    in >> a;
-                v[i] = vertex[a - 1];
+                    in >> a, v[i] = vertex[a - 1];
                 // vt TODO
                 in >> d;
                 if (uvmap.size())
-                    in >> a;
+                    in >> a, vt[i] = uvmap[a - 1];
                 // normal
                 in >> d;
                 if (normal.size())
-                    in >> a;
-                vn[i] = normal[a - 1];
-                // color
-                if (color.size())
-                    in >> d >> a, c[i] = color[a - 1];
-                else
-                    c[i] = glm::vec4(1.0,
-                                     1.0,
-                                     1.0, 1.f);
+                    in >> a, vn[i] = normal[a - 1];
             }
-            out->addFace(new Face(3, v, vn, c, GL_TRIANGLE_STRIP));
+            out->addFace(new Face(3, v, vt, vn, GL_TRIANGLE_STRIP));
         } else {
             getline(in, type);
         }

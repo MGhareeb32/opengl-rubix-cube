@@ -3,6 +3,7 @@
 MeshViewer::MeshViewer() {
     game::fogSet(glm::vec4(0.4f, 0.4f, 0.4f, 1.f), 0.f);
     cam_ = new game::Camera();
+    cam_->persp();
     game::cameraSet(cam_);
     // load
     obj_mesh_ = (game::Mesh*)game::ResMgr::load
@@ -14,9 +15,9 @@ MeshViewer::MeshViewer() {
     axes_mtl_ = (game::Material*)game::ResMgr::load
         ("res/mesh/viewer/room.mtl");
     light_mesh_ = (game::Mesh*)game::ResMgr::load
-        ("res/mesh/viewer/sphere.obj");
+        ("res/mesh/viewer/gem.obj");
     light_mtl_ = (game::Material*)game::ResMgr::load
-        ("res/mesh/viewer/sphere.mtl");
+        ("res/mesh/viewer/gem.mtl");
     // axes
     set_mesh(axes_mesh_);
     set_mtl(axes_mtl_);
@@ -27,12 +28,15 @@ MeshViewer::MeshViewer() {
     addChild("obj", obj_entity_);
     obj_entity_->scale(glm::vec3(.25f, .25f, .25f));
     // light
-    light_entity_ = new game::MeshEntity(light_mesh_);
+    light_ = new game::Light(glm::vec3(10));
+    addChild("light", light_);
+    game::lights.push_back(light_);
+    //
+    light_entity_= new game::MeshEntity(light_mesh_);
     light_entity_->set_mtl(light_mtl_);
-    addChild("light", light_entity_);
-    light_entity_->addChild("light", game::lightGet());
-    light_entity_->scale(glm::vec3(.1f, .1f, .1f));
-    light_entity_->translate(glm::vec3(.25f, 0.f, .5f));
+    light_entity_->scale(glm::vec3(.05f, .05f, .05f));
+    light_->addChild("light", light_entity_);
+    light_->translate(glm::vec3(1.f, .5f, 0.f));
 }
 
 MeshViewer::~MeshViewer() {
@@ -42,20 +46,18 @@ void MeshViewer::update() {
     GLfloat speed = game::key_down_[' '] * 3 + 2;
     // obj
     if (game::key_down_['b'])
-        light_entity_->translate(+speed / 100
-                                 * glm::normalize(light_entity_->o()));
+        light_->translate(+speed / 100 * glm::normalize(light_->o()));
     if (game::key_down_['n'])
-        light_entity_->translate(-speed / 100
-                                 * glm::normalize(light_entity_->o()));
+        light_->translate(-speed / 100 * glm::normalize(light_->o()));
     if (game::key_down_['x'])
         obj_entity_->rotate(+speed, glm::vec3(0, 0, 1), glm::vec3(0, 0, 0));
     if (game::key_down_['z'])
         obj_entity_->rotate(-speed, glm::vec3(0, 0, 1), glm::vec3(0, 0, 0));
     // light
     if (game::key_down_['c'])
-        light_entity_->rotate(+speed, glm::vec3(0, 0, 1), glm::vec3(0, 0, 0));
+        light_->rotate(+speed, glm::vec3(0, 0, 1), glm::vec3(0, 0, 0));
     if (game::key_down_['v'])
-        light_entity_->rotate(-speed, glm::vec3(0, 0, 1), glm::vec3(0, 0, 0));
+        light_->rotate(-speed, glm::vec3(0, 0, 1), glm::vec3(0, 0, 0));
     // camera
     game::Camera* myCamera = game::cameraGet();
     if (game::key_down_['w'])

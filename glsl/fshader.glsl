@@ -1,12 +1,12 @@
 #version 330 core
+#define NUM_LIGHTS 32
 
 uniform mat4 model, view;
 
 uniform float scene_fog;
 uniform vec3 scene_color;
 
-uniform vec3 light_pos;
-uniform vec3 light_ambient, light_diffuse, light_specular;
+uniform mat4 lights[NUM_LIGHTS];
 
 uniform vec3 ka, kd, ks;
 uniform float ns, tr;
@@ -14,8 +14,9 @@ uniform float ns, tr;
 uniform vec4 blend_color;
 uniform vec4 blend_factor;
 
+in mat4 modelView;
 in vec3 fPos;
-in vec3 fN, fL, fE;
+in vec3 fNormal;
 
 vec3 rgb2hsv(vec3 c) {
     vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
@@ -34,19 +35,27 @@ vec3 hsv2rgb(vec3 c) {
 }
 
 void main() {
+        
     // LIGHT
+    vec3 afterLight = scene_color;
+    vec3 fN = (modelView * vec4(fNormal, 0)).xyz;
+    vec3 fE = -fPos;
     vec3 N = normalize(fN);
     vec3 E = vec3(0, 0, 1);
     if (dot(N, E) < 0)
         discard;
-    vec3 L = normalize(fL);
-    vec3 H = normalize(L + E);
- 
-    vec3 ambient = light_ambient * ka;
-    vec3 diffuse = light_diffuse * kd * max(dot(L, N), 0);
-    vec3 specular = light_specular * ks * pow(max(dot(N, H), 0), 0.1 * ns);
+    for (int i = 0; i < NUM_LIGHTS; ++i) {
+        vec3 fL = (view * vec4(lights[i][0].xyz, 0)).xyz;
+    
+        vec3 L = normalize(fL);
+        vec3 H = normalize(L + E);
+     
+        vec3 ambient = lights[i][1].xyz * ka;
+        vec3 diffuse = lights[i][2].xyz * kd * max(dot(L, N), 0);
+        vec3 specular = lights[i][3].xyz * ks * pow(max(dot(N, H), 0), ns);
 
-    vec3 afterLight = (scene_color + ambient + diffuse + specular);
+        afterLight += (ambient + diffuse + specular);
+    }
 
     // FOG
     vec3 afterFog = mix(afterLight, scene_color,

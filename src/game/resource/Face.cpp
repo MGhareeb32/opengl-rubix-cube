@@ -2,8 +2,8 @@
 
 namespace game {
 
-Face::Face(int vertexCount, glm::vec3 *vertex, glm::vec3 *normal,
-           glm::vec4 *color, GLint mode) {
+Face::Face(int vertexCount, glm::vec3 *vertex, glm::vec2 *uvmap,
+           glm::vec3 *normal, GLint mode) {
 
     nVertex_ = vertexCount;
 	drawMode_ = mode;
@@ -13,21 +13,23 @@ Face::Face(int vertexCount, glm::vec3 *vertex, glm::vec3 *normal,
 
     glGenBuffers(3, &vbo_[0]);
 
+    int attr_idx = 0;
+
     // position
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_[0]);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_[attr_idx]);
     glBufferData(GL_ARRAY_BUFFER,
                  nVertex_ * sizeof(glm::vec3), vertex, GL_STATIC_DRAW);
-    // set as attr 0
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(attr_idx);
+    glVertexAttribPointer(attr_idx, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    attr_idx++;
 
     // normal
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_[1]);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_[attr_idx]);
     glBufferData(GL_ARRAY_BUFFER,
                  nVertex_ * sizeof(glm::vec3), normal, GL_STATIC_DRAW);
-    // set as attr 1
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(attr_idx);
+    glVertexAttribPointer(attr_idx, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    attr_idx++;
 }
 
 int Face::getVertexCount() {

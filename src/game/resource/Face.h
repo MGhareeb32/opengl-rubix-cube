@@ -12,8 +12,8 @@ private:
     int nVertex_;
     GLuint vao_, vbo_[3], drawMode_;
 public:
-    Face(int vertexCount, glm::vec3 *vertex, glm::vec3 *normal,
-         glm::vec4 *color, GLint mode);
+    Face(int vertexCount, glm::vec3 *vertex, glm::vec2 *uvmap,
+         glm::vec3 *normal, GLint mode);
     int getVertexCount();
     void render();
     virtual ~Face();

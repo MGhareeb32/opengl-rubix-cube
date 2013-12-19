@@ -24,8 +24,9 @@ GLint unifrom_model_matrix_, unifrom_view_matrix_, unifrom_proj_matrix_;
 
 GLint unifrom_scene_color_, unifrom_scene_fog_;
 
-GLint unifrom_light_pos_;
-GLint unifrom_light_ambient_, unifrom_light_diffuse_, unifrom_light_specular_;
+const int NUM_LIGHTS = 32;
+std::vector<Light*> lights;
+GLint unifrom_lights_[NUM_LIGHTS];
 
 GLint unifrom_mtl_ka_, unifrom_mtl_kd_, unifrom_mtl_ks_;
 GLint unifrom_mtl_ns_, unifrom_mtl_tr_;
@@ -39,7 +40,6 @@ GLint global_time_;
 
 game::Entity* scene_;
 game::Camera* camera_;
-game::Light* light_ = new Light();
 
 // OPENGL
 
@@ -77,15 +77,12 @@ void mtlSet(Material* mtl) {
 
 // LIGHT
 
-Light* lightGet() {
-    return light_;
-}
-
 void lightSet(int idx, Light* l) {
-    glUniform3fv(unifrom_light_pos_, 1, &l->o()[0]);
-    glUniform3fv(unifrom_light_ambient_, 1, &l->ambient()[0]);
-    glUniform3fv(unifrom_light_diffuse_, 1, &l->diffuse()[0]);
-    glUniform3fv(unifrom_light_specular_, 1, &l->specular()[0]);
+    glm::mat4 a = glm::mat4(glm::vec4(l->o(), 0),
+                            glm::vec4(l->ambient(), 0),
+                            glm::vec4(l->diffuse(), 0),
+                            glm::vec4(l->specular(), 0));
+    glUniformMatrix4fv(unifrom_lights_[idx], 1, GL_FALSE, &a[0][0]);
 }
 
 // SCENE
@@ -131,12 +128,15 @@ void init() {
     // uniform vec3 scene_color;
     unifrom_scene_fog_ = glGetUniformLocation(program, "scene_fog");
     unifrom_scene_color_ = glGetUniformLocation(program, "scene_color");
-    // uniform vec3 light_pos;
-    // uniform vec3 light_ambient, light_diffuse, light_specular;
-    unifrom_light_pos_ = glGetUniformLocation(program, "light_pos");
-    unifrom_light_ambient_ = glGetUniformLocation(program, "light_ambient");
-    unifrom_light_diffuse_ = glGetUniformLocation(program, "light_diffuse");
-    unifrom_light_specular_ = glGetUniformLocation(program, "light_specular");
+    // uniform vec3 lights[NUM_LIGHTS][4];
+    for (int i = 0; i < NUM_LIGHTS; ++i) {
+        std::stringstream ss;
+        ss << "lights[" << i << "]";
+        unifrom_lights_[i] = glGetUniformLocation(program, ss.str().c_str());
+        Light *l = new Light(glm::vec3(0), glm::vec3(0), glm::vec3(0));
+        lightSet(i, l);
+        l->~Light();
+    }
     // uniform vec3 ka, kd, ks;
     unifrom_mtl_ka_ = glGetUniformLocation(program, "ka");
     unifrom_mtl_kd_ = glGetUniformLocation(program, "kd");
@@ -201,8 +201,8 @@ void display(void) {
     if (camera_)
         setUniformViewMatrix(camera_->getViewMatrix()),
         setUniformProjMatrix(camera_->getProjectionMatrix());
-    if (light_)
-        lightSet(0, light_);
+    for (int i = 0; i < lights.size(); ++i)
+        lightSet(i, lights[i]);
     if (scene_)
         scene_->render();
 

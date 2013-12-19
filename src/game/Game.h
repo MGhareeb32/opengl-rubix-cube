@@ -40,7 +40,8 @@ Camera* cameraGet();
 extern void mtlSet(Material* mtl);
 
 extern void sceneColorSet(glm::vec3 color);
-extern Light* lightGet();
+extern const int NUM_LIGHTS;
+extern std::vector<Light*> lights;
 
 extern void fogSet(glm::vec4 color, GLfloat mag);
 
