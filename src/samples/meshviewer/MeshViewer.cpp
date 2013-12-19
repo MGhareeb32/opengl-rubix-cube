@@ -7,17 +7,18 @@ MeshViewer::MeshViewer() {
     obj_mesh_ = (game::Mesh*)game::ResMgr::load("res/mesh/teapot.obj");
     obj_mtl_ = (game::Material*)game::ResMgr::load("res/mesh/teapot.mtl");
     axes_mesh_ = (game::Mesh*)game::ResMgr::load("res/mesh/axes.obj");
-    axes_mtl_ = (game::Material*)game::ResMgr::load("res/mesh/axes.mtl");
+    axes_mtl_ = (game::Material*)game::ResMgr::load("res/mesh/teapot.mtl");
     light_mesh_ = (game::Mesh*)game::ResMgr::load("res/mesh/box.obj");
     light_mtl_ = (game::Material*)game::ResMgr::load("res/mesh/box.mtl");
     // axes
     set_mesh(axes_mesh_);
     set_mtl(axes_mtl_);
+    scale(glm::vec3(.5f, .5f, .5f));
     // obj
     obj_entity_ = new game::MeshEntity(obj_mesh_);
     obj_entity_->set_mtl(obj_mtl_);
     addChild("obj", obj_entity_);
-    obj_entity_->scale(glm::vec3(.5f, .5f, .5f));
+    obj_entity_->scale(glm::vec3(.25f, .25f, .25f));
     // light
     light_entity_ = new game::MeshEntity(light_mesh_);
     light_entity_->set_mtl(light_mtl_);
@@ -33,6 +34,10 @@ MeshViewer::~MeshViewer() {
 void MeshViewer::update() {
     GLfloat speed = game::key_down_[' '] * 3 + 2;
     // obj
+    if (game::key_down_['b'])
+        light_entity_->translate(+speed / 100 * glm::normalize(light_entity_->o()));
+    if (game::key_down_['n'])
+        light_entity_->translate(-speed / 100 * glm::normalize(light_entity_->o()));
     if (game::key_down_['x'])
         obj_entity_->rotate(+speed, glm::vec3(0, 0, 1), glm::vec3(0, 0, 0));
     if (game::key_down_['z'])

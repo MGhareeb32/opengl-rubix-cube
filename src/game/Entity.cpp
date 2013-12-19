@@ -91,7 +91,7 @@ void Entity::scale(glm::vec3 s, glm::vec3 offset) {
     glm::mat4 scl = glm::scale(s);
     glm::mat4 scl_i = glm::scale(1.f / s);
     transform_ = trans * scl * trans_i * transform_;
-    transform_i_ = transform_i_ * trans_i * scl_i * trans;
+    transform_i_ = transform_i_ * trans * scl_i * trans_i;
     u_ = glm::vec3(scl * glm::vec4(u_, 1.f));
     v_ = glm::vec3(scl * glm::vec4(v_, 1.f));
     n_ = glm::vec3(scl * glm::vec4(n_, 1.f));
@@ -109,7 +109,7 @@ void Entity::rotate(GLfloat angle, glm::vec3 axis, glm::vec3 offset) {
     glm::mat4 rot = glm::rotate(angle, axis);
     glm::mat4 rot_i = glm::rotate(-angle, axis);
     transform_ = trans * rot * trans_i * transform_;
-    transform_i_ = transform_i_ * trans_i * rot_i * trans;
+    transform_i_ = transform_i_ * trans * rot_i * trans_i;
     o_ = glm::vec3(trans * rot * trans_i * glm::vec4(o_, 1.f));
     u_ = glm::vec3(rot * glm::vec4(u_, 1.f));
     v_ = glm::vec3(rot * glm::vec4(v_, 1.f));

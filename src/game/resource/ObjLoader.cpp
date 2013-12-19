@@ -34,26 +34,26 @@ game::Mesh *load(std::string fname) {
         } else if (!type.compare("f")) {
             glm::vec4 c[3];
             glm::vec3 v[3], vn[3];
-            int a[4];
+            int a;
             char d;
             for (int i = 0; i < 3; ++i) {
                 // v/vt/vn
                 // coord
                 if (vertex.size())
-                    in >> a[0];
-                v[i] = vertex[a[0] - 1];
+                    in >> a;
+                v[i] = vertex[a - 1];
                 // vt TODO
                 in >> d;
                 if (uvmap.size())
-                    in >> a[1];
+                    in >> a;
                 // normal
                 in >> d;
                 if (normal.size())
-                    in >> a[2];
-                vn[i] = normal[a[2] - 1];
+                    in >> a;
+                vn[i] = normal[a - 1];
                 // color
                 if (color.size())
-                    in >> d >> a[3], c[i] = color[a[3] - 1];
+                    in >> d >> a, c[i] = color[a - 1];
                 else
                     c[i] = glm::vec4(1.0,
                                      1.0,

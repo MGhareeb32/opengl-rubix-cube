@@ -2,11 +2,9 @@
 
 namespace game {
 
-Camera::Camera(GLfloat xleft, GLfloat xright, GLfloat ybottom, GLfloat ytop,
-        GLfloat znear, GLfloat zfar): Entity() {
-    near_ = glm::vec3(xleft, ybottom, znear);
-    far_ = glm::vec3(xright, ytop, zfar);
-    lookAt(glm::vec3(.1f, .1f, .1f), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1));
+Camera::Camera() : Entity() {
+    ortho();
+    lookAt(glm::vec3(.1, .1, .1), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1));
 }
 
 Camera::~Camera() {
@@ -30,13 +28,30 @@ void Camera::lookAt(glm::vec3 eye, glm::vec3 coi, glm::vec3 upv) {
     translate(eye);
 }
 
-glm::mat4 Camera::getProjectionMatrix() {
+void Camera::ortho(GLfloat xleft, GLfloat xright,
+                   GLfloat ybottom, GLfloat ytop,
+                   GLfloat znear, GLfloat zfar) {
+    glm::vec3 near_ = glm::vec3(xleft, ybottom, znear);
+    glm::vec3 far_ = glm::vec3(xright, ytop, zfar);
     glm::vec3 add = far_ + near_;
     glm::vec3 sub = far_ - near_;
-    return glm::mat4(2 / sub.x, 0, 0, -add.x / sub.x,
-                     0, 2 / sub.y, 0, -add.y / sub.y,
-                     0, 0, -2 / sub.z, -add.z / sub.z,
-                     0, 0, 0, 1);
+    proj_ = glm::mat4(1);
+    proj_[0][0] = 2 / sub.x;
+    proj_[1][1] = 2 / sub.y;
+    proj_[2][2] = -2 / sub.z;
+    proj_[3][0] = -add.x / sub.x;
+    proj_[3][1] = -add.y / sub.y;
+    proj_[3][2] = -add.z / sub.z;
+}
+
+void Camera::persp(GLfloat fov, GLfloat aspect, GLfloat n, GLfloat f) {
+    GLfloat t = n * glm::tan(fov);
+    GLfloat r = t * aspect;
+    proj_ = glm::mat4
+        (n / r, 0    , 0                 , 0                   ,
+         0    , n / t, 0                 , 0                   ,
+         0    , 0    , -(f + n) / (f - n), -2 * f * n / (f - n),
+         0    , 0    , -1                , 0                   );
 }
 
 glm::mat4 Camera::getViewMatrix() {

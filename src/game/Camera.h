@@ -8,16 +8,19 @@
 namespace game {
 
 class Camera : public Entity {
-    glm::vec3 near_, far_;
+    glm::mat4 proj_;
 public:
-    Camera(GLfloat xleft = -1, GLfloat xright = 1,
-           GLfloat ybottom = -1, GLfloat ytop = 1,
-           GLfloat znear = -1, GLfloat zfar = 1);
+    Camera();
     virtual ~Camera();
 
     void lookAt(glm::vec3 eye, glm::vec3 coi, glm::vec3 upv);
+    void ortho(GLfloat xleft = -1, GLfloat xright = 1,
+               GLfloat ybottom = -1, GLfloat ytop = 1,
+               GLfloat znear = -4, GLfloat zfar = 4);
+    void persp(GLfloat fov = 45, GLfloat aspect = 1,
+               GLfloat n = -1, GLfloat f = 1);
 
-    glm::mat4 getProjectionMatrix();
+    glm::mat4 getProjectionMatrix() { return proj_; }
     glm::mat4 getViewMatrix();
 };
 
