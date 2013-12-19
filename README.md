@@ -1,8 +1,8 @@
 OpenGL Rubix Cube
 =================
 
-A simple introduction to OpenGL, Shader Language, transformations, viewing, and
-projection.
+A simple introduction to OpenGL, Shader Language, transformations, viewing,
+projection, fog, and lighting.
 
 ![ScreenShot](https://raw.github.com/MGhareeb32/opengl-rubix-cube/master/screenshot.png)
 
