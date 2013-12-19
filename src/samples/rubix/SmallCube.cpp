@@ -16,7 +16,7 @@ SmallCube::SmallCube(glm::vec3 p, game::Mesh *flat, game::Mesh *rubix) {
                          * 180 / M_PI;
         std::string name = std::string("small") + char(i + '0');
         Entity* small = addChild
-            (name, new CubeFace(diffAng <= 60 ? rubix : flat, p + v));
+            (name, new CubeFace(diffAng > 60, flat, rubix, p + v));
         // position
         GLdouble rot = -acos(glm::dot(v, small->v())) * 180 / M_PI;
         glm::vec3 axis = glm::cross(v, small->v());
@@ -53,29 +53,35 @@ void SmallCube::render() {
 
 // CUBE FACE
 
-CubeFace::CubeFace(game::Mesh *m, glm::vec3 p) {
+CubeFace::CubeFace(bool f, game::Mesh *flat, game::Mesh *rubix, glm::vec3 p) {
 
     static game::Material* COLORS[7]
-        = { (game::Material*)game::ResMgr::load("res/mesh/rubix-1.mtl"),
-            (game::Material*)game::ResMgr::load("res/mesh/rubix-2.mtl"),
-            (game::Material*)game::ResMgr::load("res/mesh/rubix-3.mtl"),
-            (game::Material*)game::ResMgr::load("res/mesh/rubix-4.mtl"),
-            (game::Material*)game::ResMgr::load("res/mesh/rubix-5.mtl"),
-            (game::Material*)game::ResMgr::load("res/mesh/rubix-6.mtl") };
+        = { (game::Material*)game::ResMgr::load("res/mesh/rubix/rubix-1.mtl"),
+            (game::Material*)game::ResMgr::load("res/mesh/rubix/rubix-6.mtl"),
+            (game::Material*)game::ResMgr::load("res/mesh/rubix/rubix-4.mtl"),
+            (game::Material*)game::ResMgr::load("res/mesh/rubix/rubix-5.mtl"),
+            (game::Material*)game::ResMgr::load("res/mesh/rubix/rubix-2.mtl"),
+            (game::Material*)game::ResMgr::load("res/mesh/rubix/rubix-3.mtl"),
+            (game::Material*)game::ResMgr::load("res/mesh/rubix/rubix-0.mtl") };
 
-    set_mesh(m);
+    set_mesh(f ? flat : rubix);
     int maxI = 0;
     for (int i = 1; i < 3; ++i)
         if (abs(p[maxI]) < abs(p[i]))
             maxI = i;
-    set_mtl(COLORS[(int) ((p[maxI] > 0 ? 0 : 1) + maxI * 2)]);
+    set_mtl(f ? COLORS[6] : COLORS[(int) ((p[maxI] > 0 ? 0 : 1) + maxI * 2)]);
+    if (!f) {
+        game::MeshEntity *back = new game::MeshEntity(flat);
+        back->set_mtl(COLORS[6]);
+        addChild("back", back);
+    }
 }
 
 CubeFace::~CubeFace() {
 }
 
 void CubeFace::render(bool selected) {
-    glm::vec4 b = glm::vec4(.8f, .8f, 0.f, 1.f);
     float f = selected ? .8f + sin(game::global_time_ / 5.0) * .2f : 1.f;
+    game::setUniformBlendColor(glm::vec4(0, 0, 0, f), glm::vec4(0, 0, 0, 1));
     game::MeshEntity::render();
 }

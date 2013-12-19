@@ -4,7 +4,7 @@ namespace game {
 
 Camera::Camera() : Entity() {
     ortho();
-    lookAt(glm::vec3(.1, .1, .1), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1));
+    lookAt(glm::vec3(2, 2, 2), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1));
 }
 
 Camera::~Camera() {
@@ -45,13 +45,13 @@ void Camera::ortho(GLfloat xleft, GLfloat xright,
 }
 
 void Camera::persp(GLfloat fov, GLfloat aspect, GLfloat n, GLfloat f) {
-    GLfloat t = n * glm::tan(fov);
-    GLfloat r = t * aspect;
-    proj_ = glm::mat4
-        (n / r, 0    , 0                 , 0                   ,
-         0    , n / t, 0                 , 0                   ,
-         0    , 0    , -(f + n) / (f - n), -2 * f * n / (f - n),
-         0    , 0    , -1                , 0                   );
+    proj_ = glm::mat4(0);
+    GLfloat tanHalfFovy = glm::tan(fov * M_PI / 360);
+    proj_[0][0] = 1 / (aspect * tanHalfFovy);
+    proj_[1][1] = 1 / (tanHalfFovy);
+    proj_[2][2] = - (f + n) / (f - n);
+    proj_[2][3] = - 1;
+    proj_[3][2] = - (2 * f * n) / (f - n);
 }
 
 glm::mat4 Camera::getViewMatrix() {

@@ -1,15 +1,22 @@
 #include "MeshViewer.h"
 
 MeshViewer::MeshViewer() {
+    game::fogSet(glm::vec4(0.4f, 0.4f, 0.4f, 1.f), 0.f);
     cam_ = new game::Camera();
     game::cameraSet(cam_);
     // load
-    obj_mesh_ = (game::Mesh*)game::ResMgr::load("res/mesh/teapot.obj");
-    obj_mtl_ = (game::Material*)game::ResMgr::load("res/mesh/teapot.mtl");
-    axes_mesh_ = (game::Mesh*)game::ResMgr::load("res/mesh/axes.obj");
-    axes_mtl_ = (game::Material*)game::ResMgr::load("res/mesh/teapot.mtl");
-    light_mesh_ = (game::Mesh*)game::ResMgr::load("res/mesh/box.obj");
-    light_mtl_ = (game::Material*)game::ResMgr::load("res/mesh/box.mtl");
+    obj_mesh_ = (game::Mesh*)game::ResMgr::load
+        ("res/mesh/viewer/teapot.obj");
+    obj_mtl_ = (game::Material*)game::ResMgr::load
+        ("res/mesh/viewer/teapot.mtl");
+    axes_mesh_ = (game::Mesh*)game::ResMgr::load
+        ("res/mesh/viewer/room.obj");
+    axes_mtl_ = (game::Material*)game::ResMgr::load
+        ("res/mesh/viewer/room.mtl");
+    light_mesh_ = (game::Mesh*)game::ResMgr::load
+        ("res/mesh/viewer/sphere.obj");
+    light_mtl_ = (game::Material*)game::ResMgr::load
+        ("res/mesh/viewer/sphere.mtl");
     // axes
     set_mesh(axes_mesh_);
     set_mtl(axes_mtl_);
@@ -25,7 +32,7 @@ MeshViewer::MeshViewer() {
     addChild("light", light_entity_);
     light_entity_->addChild("light", game::lightGet());
     light_entity_->scale(glm::vec3(.1f, .1f, .1f));
-    light_entity_->translate(glm::vec3(1, 0, 0));
+    light_entity_->translate(glm::vec3(.25f, 0.f, .5f));
 }
 
 MeshViewer::~MeshViewer() {
@@ -35,9 +42,11 @@ void MeshViewer::update() {
     GLfloat speed = game::key_down_[' '] * 3 + 2;
     // obj
     if (game::key_down_['b'])
-        light_entity_->translate(+speed / 100 * glm::normalize(light_entity_->o()));
+        light_entity_->translate(+speed / 100
+                                 * glm::normalize(light_entity_->o()));
     if (game::key_down_['n'])
-        light_entity_->translate(-speed / 100 * glm::normalize(light_entity_->o()));
+        light_entity_->translate(-speed / 100
+                                 * glm::normalize(light_entity_->o()));
     if (game::key_down_['x'])
         obj_entity_->rotate(+speed, glm::vec3(0, 0, 1), glm::vec3(0, 0, 0));
     if (game::key_down_['z'])

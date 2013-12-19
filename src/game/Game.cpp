@@ -165,8 +165,8 @@ void init() {
     setUniformViewMatrix(glm::mat4(1));
     setUniformProjMatrix(glm::mat4(1));
     mtlSet(new Material("default"));
-    sceneColorSet(glm::vec3(0.f, 0.f, 0.f));
-    fogSet(glm::vec4(0.4f, 0.4f, 0.4f, 1.f), 0.f);
+    sceneColorSet(glm::vec3(0.1f, 0.1f, 0.1f));
+    fogSet(glm::vec4(0.1f, 0.1f, 0.1f, 1.f), 1.f);
 }
 
 // INPUT

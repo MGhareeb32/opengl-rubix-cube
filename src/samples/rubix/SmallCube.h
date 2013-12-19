@@ -22,7 +22,7 @@ public:
 
 class CubeFace : public game::MeshEntity {
 public:
-    CubeFace(game::Mesh *m, glm::vec3 p);
+    CubeFace(bool f, game::Mesh *flat, game::Mesh *rubix, glm::vec3 p);
     virtual ~CubeFace();
     void render(bool selected);
 };

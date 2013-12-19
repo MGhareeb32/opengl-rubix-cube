@@ -1,10 +1,12 @@
 #include "RubixCube.h"
 
 RubixCube::RubixCube() {
-    rubix = (game::Mesh*)game::ResMgr::load("res/mesh/rubix-face.obj");
-    flat = (game::Mesh*)game::ResMgr::load("res/mesh/flat-face.obj");
+    rubix = (game::Mesh*)game::ResMgr::load("res/mesh/rubix/rubix-face.obj");
+    flat = (game::Mesh*)game::ResMgr::load("res/mesh/rubix/flat-face.obj");
     // initialize faces
-    game::cameraSet(new game::Camera());
+    game::Camera *cam = new game::Camera();
+    cam->persp();
+    game::cameraSet(cam);
     // faces
     for (GLfloat x = -1.f; x <= +1.f; x += 1.f)
         for (GLfloat y = -1.f; y <= +1.f; y += 1.f)
@@ -14,7 +16,8 @@ RubixCube::RubixCube() {
                              new SmallCube(glm::vec3(x, y, z), flat, rubix));
     //
     scale(glm::vec3(.4f, .4f, .4f));
-    game::lightGet()->translate(glm::vec3(0, 10, 0));
+    game::lightGet()->translate(glm::vec3(10, 10, 10));
+    game::fogSet(glm::vec4(0, 0, 0, 1), 0);
 }
 
 RubixCube::~RubixCube() {
@@ -29,7 +32,6 @@ RubixCube::~RubixCube() {
 }
 
 void RubixCube::update() {
-    // game::lightGet()->rotate(5.f, glm::vec3(0, 0, 1), glm::vec3(0, 0, 0));
     // camera
     game::Camera* myCamera = game::cameraGet();
     bool speed = game::key_down_[' '];
@@ -53,6 +55,8 @@ void RubixCube::update() {
     if (game::key_down_['D'])
         myCamera->translate(myCamera->u() * .1f);
     // select
+    if (game::key_down_['0'])
+        select(-1, -1);
     if (game::key_down_['1'])
         select(0, -1);
     if (game::key_down_['2'])
@@ -80,28 +84,36 @@ void RubixCube::update() {
 }
 
 void RubixCube::select(int axis, GLfloat n) {
-    glm::vec3 axes[3] = { glm::vec3(1, 0, 0),
-                          glm::vec3(0, 1, 0),
-                          glm::vec3(0, 0, 1) };
-    // check
     std::vector<std::string> v = childrenNames();
-    std::set<SmallCube*> good;
-    bool can = true;
-    for (int i = 0; i < v.size() && can; ++i) {
-        SmallCube* ch = (SmallCube*)getChild(v[i]);
-        glm::vec3 org = ch->o();
-        can = abs(ch->spin_ang()) < EPS;
-        if (n <= org[axis] + EPS && n >= org[axis] -EPS)
-            good.insert(ch);
+    // de-select
+    if (axis == -1) {
+        for (int i = 0; i < v.size(); ++i)
+            *((SmallCube*)getChild(v[i]))->selected() = false;
     }
     // select
-    if (can)
-        for (int i = 0; i < v.size(); ++i)
-            if (good.find((SmallCube*)getChild(v[i])) != good.end())
-                *((SmallCube*)getChild(v[i]))->selected() = true,
-                ((SmallCube*)getChild(v[i]))->set_spin_axis(axes[axis]);
-            else
-                *((SmallCube*)getChild(v[i]))->selected() = false;
+    else {
+        glm::vec3 axes[3] = { glm::vec3(1, 0, 0),
+                              glm::vec3(0, 1, 0),
+                              glm::vec3(0, 0, 1) };
+        // check
+        std::set<SmallCube*> good;
+        bool can = true;
+        for (int i = 0; i < v.size() && can; ++i) {
+            SmallCube* ch = (SmallCube*)getChild(v[i]);
+            glm::vec3 org = ch->o();
+            can = abs(ch->spin_ang()) < EPS;
+            if (n <= org[axis] + EPS && n >= org[axis] -EPS)
+                good.insert(ch);
+        }
+        // select
+        if (can)
+            for (int i = 0; i < v.size(); ++i)
+                if (good.find((SmallCube*)getChild(v[i])) != good.end())
+                    *((SmallCube*)getChild(v[i]))->selected() = true,
+                    ((SmallCube*)getChild(v[i]))->set_spin_axis(axes[axis]);
+                else
+                    *((SmallCube*)getChild(v[i]))->selected() = false;
+    }
 }
 
 void RubixCube::spin(GLfloat ang) {

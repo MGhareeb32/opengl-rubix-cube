@@ -8,7 +8,7 @@ const GLfloat DISPLAY_FPS = 30;
 
 int main(int argc, char **argv) {
     game::init(argc, argv, DISPLAY_WIDTH, DISPLAY_HEIGHT, "");
-    game::sceneSet(new MeshViewer());
+    game::sceneSet(new RubixCube());
     game::start(DISPLAY_FPS);
     return 0;
 }
